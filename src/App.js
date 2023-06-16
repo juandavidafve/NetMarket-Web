@@ -34,10 +34,14 @@ export default function App() {
 
   }, [])
 
+  async function actualizarUsuario(){
+    await buscarUsuario(usuario.id);
+  }
+
   async function buscarUsuario(id) {
     try {
       const response = await axios({
-        url: `http://localhost:8080/NetMarket/api/usuario/${id}`
+        url: `http://10.18.47.101:8080/NetMarket/api/usuario/${id}`
       });
       if (response.headers["content-length"] > 0) {
         await setUsuario(response.data);
@@ -56,7 +60,7 @@ export default function App() {
         } />
         <Route path="/catalogo/:id" element={<Catalogo />} />
         <Route path="/dashboard" element={
-          usuario ? <Dashboard info={usuario} /> : <Navigate to="/login" replace />
+          usuario ? <Dashboard usuario={usuario} actualizarUsuario={actualizarUsuario}/> : <Navigate to="/login" replace />
         } />
         <Route path="/signup" element={
           !usuario ? <Signup setUsuario={setUsuario} /> : <Navigate to="/dashboard" replace />

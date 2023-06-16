@@ -1,22 +1,37 @@
+import { useState } from 'react';
+
 import { auth } from '../firebase';
 import { signOut } from "firebase/auth";
+import Sidebar from "../componentes/Dashboard/Sidebar";
 
-export default function Dashboard({ info }) {
+import SectionCatalogo from '../componentes/Dashboard/SectionCatalogo';
+import SectionCuenta from '../componentes/Dashboard/SectionCuenta';
+import SectionProductos from '../componentes/Dashboard/SectionProductos';
 
-    function handleLogout() {
-        signOut(auth).then(() => {
-            // Sign-out successful.
-            //navigate("/login");
-            console.log("Signed out successfully")
-        }).catch((error) => {
-            console.error(error);
-        });
-    }
+export default function Dashboard({ usuario, actualizarUsuario }) {
+    const [seccion, setSeccion] = useState("catalogo");
+    const [catalogo, setCatalogo] = useState(usuario.catalogos[0]);
 
     return (
         <div>
-            <p>Wenas {info.nombre}. ID {info.id}. Email {info.correo}</p>
-            <button onClick={handleLogout}>Cerrar sesion</button>
+            <Sidebar seccion={seccion} setSeccion={setSeccion} catalogo={catalogo} setCatalogo={setCatalogo} usuario={usuario} actualizarUsuario={actualizarUsuario} />
+
+            <div className="w-80" style={{
+                marginLeft: "20%"
+            }}>
+
+                {
+                    seccion == "catalogo" ? <SectionCatalogo /> : "" 
+                }
+                {
+                    seccion == "productos" ? <SectionProductos catalogo={catalogo}/> : ""
+                }
+                {
+                    seccion == "cuenta" ? <SectionCuenta /> : ""
+                }
+
+            </div>
+            
         </div>
     )
 }
