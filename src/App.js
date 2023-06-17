@@ -1,11 +1,16 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-import { fas } from '@fortawesome/free-solid-svg-icons'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 
@@ -20,7 +25,6 @@ import Dashboard from "./paginas/Dashboard";
 library.add(fab, fas);
 
 export default function App() {
-
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
@@ -31,23 +35,21 @@ export default function App() {
         await setUsuario(null);
       }
     });
+  }, []);
 
-  }, [])
-
-  async function actualizarUsuario(){
+  async function actualizarUsuario() {
     await buscarUsuario(usuario.id);
   }
 
   async function buscarUsuario(id) {
     try {
       const response = await axios({
-        url: `http://10.18.47.101:8080/NetMarket/api/usuario/${id}`
+        url: `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/usuario/${id}`,
       });
       if (response.headers["content-length"] > 0) {
         await setUsuario(response.data);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -55,20 +57,36 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={
-          <Navigate to="/dashboard" replace />
-        } />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/catalogo/:id" element={<Catalogo />} />
-        <Route path="/dashboard" element={
-          usuario ? <Dashboard usuario={usuario} actualizarUsuario={actualizarUsuario}/> : <Navigate to="/login" replace />
-        } />
-        <Route path="/signup" element={
-          !usuario ? <Signup setUsuario={setUsuario} /> : <Navigate to="/dashboard" replace />
-        } />
-        <Route path="/login" element={
-          !usuario ? <Login /> : <Navigate to="/dashboard" replace />
-        } />
+        <Route
+          path="/dashboard"
+          element={
+            usuario ? (
+              <Dashboard
+                usuario={usuario}
+                actualizarUsuario={actualizarUsuario}
+              />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            !usuario ? (
+              <Signup setUsuario={setUsuario} />
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={!usuario ? <Login /> : <Navigate to="/dashboard" replace />}
+        />
       </Routes>
     </Router>
-  )
+  );
 }

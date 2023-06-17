@@ -1,37 +1,66 @@
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { auth } from '../firebase';
-import { signOut } from "firebase/auth";
 import Sidebar from "../componentes/Dashboard/Sidebar";
 
-import SectionCatalogo from '../componentes/Dashboard/SectionCatalogo';
-import SectionCuenta from '../componentes/Dashboard/SectionCuenta';
-import SectionProductos from '../componentes/Dashboard/SectionProductos';
+import SectionCatalogo from "../componentes/Dashboard/SectionCatalogo";
+import SectionCuenta from "../componentes/Dashboard/SectionCuenta";
+import SectionProductos from "../componentes/Dashboard/SectionProductos";
 
 export default function Dashboard({ usuario, actualizarUsuario }) {
-    const [seccion, setSeccion] = useState("catalogo");
-    const [catalogo, setCatalogo] = useState(usuario.catalogos[0]);
+  const [seccion, setSeccion] = useState("catalogo");
+  const [indexCatalogo, setIndexCatalogo] = useState(0);
+  const [catalogo, setCatalogo] = useState(null);
 
-    return (
-        <div>
-            <Sidebar seccion={seccion} setSeccion={setSeccion} catalogo={catalogo} setCatalogo={setCatalogo} usuario={usuario} actualizarUsuario={actualizarUsuario} />
+  useEffect(() => {
+    if (usuario.catalogos) {
+      setCatalogo(usuario.catalogos[indexCatalogo]);
+    }
+  }, [indexCatalogo, usuario]);
 
-            <div className="w-80" style={{
-                marginLeft: "20%"
-            }}>
+  return (
+    <div>
+      <Sidebar
+        seccion={seccion}
+        setSeccion={setSeccion}
+        catalogo={catalogo}
+        setIndexCatalogo={setIndexCatalogo}
+        usuario={usuario}
+        actualizarUsuario={actualizarUsuario}
+      />
 
-                {
-                    seccion == "catalogo" ? <SectionCatalogo /> : "" 
-                }
-                {
-                    seccion == "productos" ? <SectionProductos catalogo={catalogo}/> : ""
-                }
-                {
-                    seccion == "cuenta" ? <SectionCuenta /> : ""
-                }
-
-            </div>
-            
-        </div>
-    )
+      <div
+        className="w-80"
+        style={{
+          width: "calc(100% - 200px)",
+          marginLeft: "200px",
+        }}
+      >
+        {seccion === "catalogo" ? (
+          <SectionCatalogo
+            setIndexCatalogo={setIndexCatalogo}
+            catalogo={catalogo}
+            actualizarUsuario={actualizarUsuario}
+          />
+        ) : (
+          ""
+        )}
+        {seccion === "productos" ? (
+          <SectionProductos
+            catalogo={catalogo}
+            actualizarUsuario={actualizarUsuario}
+          />
+        ) : (
+          ""
+        )}
+        {seccion === "cuenta" ? (
+          <SectionCuenta
+            usuario={usuario}
+            actualizarUsuario={actualizarUsuario}
+          />
+        ) : (
+          ""
+        )}
+      </div>
+    </div>
+  );
 }
