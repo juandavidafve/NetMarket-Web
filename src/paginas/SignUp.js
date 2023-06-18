@@ -19,7 +19,7 @@ export default function Signup({ setUsuario }) {
   async function crearUsuario(usuario) {
     try {
       const res = await axios.post(
-        "https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/usuario/",
+        "http://localhost:8080/NetMarket/api/usuario/",
         usuario
       );
       setUsuario(res.data);

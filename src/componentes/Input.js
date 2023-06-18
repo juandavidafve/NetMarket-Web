@@ -5,7 +5,7 @@ export default function Input({
   placeholder,
   form,
   setForm,
-  value = "",
+  defaultValue = "",
   splitMultiline = false,
 }) {
   function handleChange(e) {
@@ -14,7 +14,9 @@ export default function Input({
     };
 
     if (e.target.nodeName === "TEXTAREA" && splitMultiline) {
-      formCopia[e.target.name] = e.target.value.split("\n");
+      formCopia[e.target.name] = e.target.value
+        .split("\n")
+        .filter((e) => e.length > 0);
     } else {
       formCopia[e.target.name] = e.target.value;
     }
@@ -33,7 +35,7 @@ export default function Input({
           id={name}
           name={name}
           type={type}
-          defaultValue={value}
+          defaultValue={defaultValue}
           required
           placeholder={placeholder}
           onChange={handleChange}
@@ -43,7 +45,7 @@ export default function Input({
           className="my-auto form-control"
           id={name}
           name={name}
-          defaultValue={value}
+          defaultValue={defaultValue}
           required
           placeholder={placeholder}
           onChange={handleChange}

@@ -44,7 +44,7 @@ export default function App() {
   async function buscarUsuario(id) {
     try {
       const response = await axios({
-        url: `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/usuario/${id}`,
+        url: `http://localhost:8080/NetMarket/api/usuario/${id}`,
       });
       if (response.headers["content-length"] > 0) {
         await setUsuario(response.data);

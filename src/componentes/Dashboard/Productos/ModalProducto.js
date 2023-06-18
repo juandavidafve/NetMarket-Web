@@ -4,53 +4,142 @@ import axios from "axios";
 import Input from "../../Input";
 
 export default function ModalProducto({
-  actualizarUsuario,
   catalogo,
   producto,
   id,
   type,
+  actualizarUsuario,
+  getCategorias,
+  eliminarCategoriaVacia,
 }) {
   const [form, setForm] = useState({ ...producto });
+  const [textoCategorias, setTextoCategorias] = useState("");
 
   useEffect(() => {
-    setForm({ ...producto });
+    (async () => {
+      if (producto && producto.id) {
+        const listaCategorias = await getCategorias(producto);
+        const texto = listaCategorias.map((c) => c.nombre).join("\n");
+        await setTextoCategorias(texto);
+
+        await setForm({ ...producto, categorias: [] });
+      }
+    })();
   }, [producto]);
 
-  async function agregarProducto() {
-    try {
+  function parseCategorias() {
+    let listaCategorias = [];
+
+    form.categorias.forEach((c) => {
+      const lista = catalogo.categorias.filter((e) => {
+        return e.nombre == c;
+      });
+
+      if (lista.length > 0) {
+        listaCategorias.push(lista[0]);
+      } else {
+        listaCategorias.push({
+          nombre: c,
+        });
+      }
+    });
+
+    return listaCategorias;
+  }
+
+  async function agregarListaCategorias(producto, listaCategorias) {
+    for (const c of listaCategorias) {
+      let categoria = c;
+      if (!c.id) {
+        categoria = (
+          await axios.post("http://localhost:8080/NetMarket/api/categoria", {
+            catalogo,
+            categoria: {
+              id: Math.floor(Math.random() * 10000),
+              ...categoria,
+            },
+          })
+        ).data.categoria;
+      }
+
       await axios.post(
-        "https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/producto/",
+        "http://localhost:8080/NetMarket/api/productocategoria/",
         {
+          producto,
+          categoria,
+        }
+      );
+    }
+  }
+
+  async function eliminarListaCategorias(producto, listaCategorias) {
+    for (const c of listaCategorias) {
+      await axios.delete(
+        `http://localhost:8080/NetMarket/api/productocategoria/${producto.id}/${c.id}`
+      );
+
+      await eliminarCategoriaVacia(c);
+    }
+  }
+
+  async function agregarProducto() {
+    const listaCategorias = parseCategorias();
+
+    try {
+      const producto = (
+        await axios.post("http://localhost:8080/NetMarket/api/producto/", {
           producto: {
             id: Math.floor(Math.random() * 10000),
             ...form,
           },
           catalogo,
-        }
-      );
+        })
+      ).data.producto;
+
+      await agregarListaCategorias(producto, listaCategorias);
 
       await actualizarUsuario();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
   async function editarProducto() {
-    console.log("e");
     try {
-      await axios.put(
-        "https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/producto/",
-        form
-      );
+      await axios.put("http://localhost:8080/NetMarket/api/producto/", form);
+
+      // obtener categorias antiguas
+      let categoriasOld = await getCategorias(producto);
+
+      // obtener nuevas categorias
+      const listaCategorias = parseCategorias();
+
+      const listaAgregar = [];
+      const listaEliminar = [];
+
+      for (let c of categoriasOld) {
+        if (!listaCategorias.filter((e) => e.nombre === c.nombre).length > 0) {
+          listaEliminar.push(c);
+        }
+      }
+
+      for (let c of listaCategorias) {
+        if (!categoriasOld.filter((e) => e.nombre === c.nombre).length > 0) {
+          listaAgregar.push(c);
+        }
+      }
+
+      await agregarListaCategorias(producto, listaAgregar);
+      await eliminarListaCategorias(producto, listaEliminar);
 
       await actualizarUsuario();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
   return (
-    <div className="modal fade" id={id} tabindex="-1">
+    <div className="modal fade" id={id} tabIndex="-1">
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
@@ -63,19 +152,19 @@ export default function ModalProducto({
               label="Nombre"
               name="nombre"
               type="text"
-              placeholder="Zapatos Air Max"
+              placeholder="Nombre del producto"
               form={form}
               setForm={setForm}
-              value={form.nombre}
+              defaultValue={form.nombre}
             />
             <Input
               label="Foto"
               name="foto"
               type="text"
-              placeholder="https://placehold.co/600x400"
+              placeholder="https://ejemplo.com/producto.jpg"
               form={form}
               setForm={setForm}
-              value={form.foto}
+              defaultValue={form.foto}
             />
             {form.foto ? (
               <img className="w-100" src={form.foto} alt=""></img>
@@ -89,26 +178,26 @@ export default function ModalProducto({
               placeholder="100000"
               form={form}
               setForm={setForm}
-              value={form.precio}
+              defaultValue={form.precio}
             />
             <Input
               label="Descripción"
               name="descripcion"
               type="textarea"
-              placeholder="Estas zapatillas para hombre tienen una parte superior de cuero sintético y malla, una unidad Max Air en el talón para mayor amortiguación y una suela de goma duradera."
+              placeholder="Descripción del producto..."
               form={form}
               setForm={setForm}
-              value={form.descripcion}
+              defaultValue={form.descripcion}
             />
             <Input
               label="Categorías"
               name="categorias"
               type="textarea"
               splitMultiline="true"
-              placeholder={"Categoría 1\nCategoría 2"}
+              placeholder={"Categoría 1\nCategoría 2\nCategoría 3"}
               form={form}
               setForm={setForm}
-              value={form.categorias}
+              defaultValue={textoCategorias}
             />
           </div>
           <div className="modal-footer">

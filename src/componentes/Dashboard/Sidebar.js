@@ -61,26 +61,24 @@ export default function Sidebar({
           <span className="fs-4 ps-2 fw-bold">NetMarket</span>
         </a>
         <hr></hr>
-        <div className="dropdown ">
-          <a
-            href="#"
-            className="text-center text-white text-decoration-none dropdown-toggle"
-            id="dropdownUser1"
+        <div className="dropdown">
+          <button
+            className="btn btn-link text-center text-white text-decoration-none dropdown-toggle"
+            id="dropdownCatalogos"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             {catalogo ? catalogo.nombre : "Catálogos"}
-          </a>
+          </button>
           <ul
             className="dropdown-menu dropdown-menu-dark text-small shadow"
-            aria-labelledby="dropdownUser1"
+            aria-labelledby="dropdownCatalogos"
           >
             <li>
               <button
                 className="dropdown-item"
                 data-bs-toggle="modal"
                 data-bs-target="#modalCrearCatalogo"
-                //onClick={agregarCatalogo}
               >
                 Agregar Catalogo
               </button>
@@ -91,10 +89,9 @@ export default function Sidebar({
             {usuario.catalogos
               ? usuario.catalogos.map((e, i) => {
                   return (
-                    <li>
+                    <li key={i}>
                       <button
                         className="dropdown-item"
-                        key={i}
                         data-index-catalogo={i}
                         onClick={handleClickCatalogo}
                       >
@@ -136,18 +133,17 @@ export default function Sidebar({
 
         <hr></hr>
         <div className="dropdown">
-          <a
-            href="#"
-            className="fw-bold d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-            id="dropdownUser1"
+          <button
+            className="btn btn-link fw-bold d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            id="dropdownUser"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             {usuario.nombre}
-          </a>
+          </button>
           <ul
             className="dropdown-menu dropdown-menu-dark text-small shadow text-center"
-            aria-labelledby="dropdownUser1"
+            aria-labelledby="dropdownUser"
           >
             <li>
               <button

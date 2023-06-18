@@ -7,7 +7,7 @@ export default function ModalBorrarCatalogo({
 }) {
   async function borrarCatalogo() {
     await axios.delete(
-      `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/catalogo/${catalogo.id}`
+      `http://localhost:8080/NetMarket/api/catalogo/${catalogo.id}`
     );
 
     await setIndexCatalogo(0);

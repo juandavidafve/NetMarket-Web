@@ -17,7 +17,7 @@ export default function Catalogo() {
   async function actualizarInfo() {
     try {
       const response = await axios({
-        url: `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/catalogo/${id}`,
+        url: `http://localhost:8080/NetMarket/api/catalogo/${id}`,
       });
       if (response.headers["content-length"] > 0) {
         setEncontrado(true);
@@ -45,7 +45,7 @@ export default function Catalogo() {
     try {
       if (categoria.id !== -1) {
         const response = await axios({
-          url: `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/producto/categoria/${categoria.id}`,
+          url: `http://localhost:8080/NetMarket/api/producto/categoria/${categoria.id}`,
         });
         setProductosMostrados(response.data);
       } else {

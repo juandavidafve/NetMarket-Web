@@ -1,15 +1,32 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function CardProducto({
   producto,
-  actualizarUsuario,
   setProducto,
+  actualizarUsuario,
+  getCategorias,
+  eliminarCategoriaVacia,
 }) {
+  const [categorias, setCategorias] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const c = await getCategorias(producto);
+      await setCategorias(c);
+    })();
+  }, [producto]);
+
   async function eliminarProducto() {
     try {
       await axios.delete(
-        `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/producto/${producto.id}`
+        `http://localhost:8080/NetMarket/api/producto/${producto.id}`
       );
+
+      for (const c of categorias) {
+        await eliminarCategoriaVacia(c);
+      }
+
       await actualizarUsuario();
     } catch (error) {
       console.log(error);
@@ -17,43 +34,66 @@ export default function CardProducto({
   }
 
   return (
-    <div className="card mb-3 w-100">
-      <div className="row g-0">
-        <div className="col-4 align-items-center">
-          <img
-            src={producto.foto}
-            className="img-fluid rounded-start w-100"
-            alt="..."
-          ></img>
-          <div className="row">
-            <button
-              className="btn btn-primary col-5"
-              data-bs-toggle="modal"
-              data-bs-target="#modalEditarProducto"
-              onClick={() => setProducto(producto)}
-            >
-              Editar
-            </button>
-            <button
-              className="btn btn-secondary col-5 offset-2"
-              onClick={eliminarProducto}
-            >
-              Eliminar
-            </button>
-          </div>
-        </div>
-        <div className="col-8">
-          <div className="card-body align-items-center">
-            <h5 className="card-title fw-bold fs-2">{producto.nombre}</h5>
-            <p className="card-text">{producto.descripcion}</p>
+    <div className="card mb-3 w-100 p-2">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-5 d-flex flex-column p-2">
             <div
-              className="p-0.3 mb-2 bg-primary text-white rounded ps-2 me-5"
-              width="10"
+              className="rounded col "
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                paddingBottom: "100%",
+              }}
             >
-              Categoria 1
+              <img
+                className="position-absolute top-50 start-50 translate-middle w-100 rounded"
+                src={producto.foto}
+                alt=""
+              ></img>
             </div>
-            <div className="p-0.3 mb-2 bg-primary text-white rounded ps-2 me-5">
-              Categoria 2
+            <div className="row">
+              <div className="col">
+                <button
+                  className="btn btn-primary w-100"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEditarProducto"
+                  onClick={() => setProducto(producto)}
+                >
+                  Editar
+                </button>
+              </div>
+              <div className="col">
+                <button
+                  className="btn btn-secondary w-100"
+                  onClick={eliminarProducto}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="col-7">
+            <div className="card-body align-items-center">
+              <h2 className="card-title fw-bold">{producto.nombre}</h2>
+              <p className="fs-4 fw-bold text-body-secondary">
+                {new Intl.NumberFormat("es-CO", {
+                  style: "currency",
+                  currency: "COP",
+                }).format(producto.precio)}
+              </p>
+              <p className="card-text">{producto.descripcion}</p>
+
+              {categorias.map((c, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="badge fw-semibold m-1 text-bg-primary"
+                  >
+                    {c.nombre}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

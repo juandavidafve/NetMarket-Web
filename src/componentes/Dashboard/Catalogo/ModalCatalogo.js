@@ -29,16 +29,13 @@ export default function ModalCatalogo({
 
   async function agregarCatalogo() {
     try {
-      await axios.post(
-        "https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/catalogo/",
-        {
-          catalogo: {
-            id: Math.floor(Math.random() * 10000),
-            ...form,
-          },
-          usuario,
-        }
-      );
+      await axios.post("http://localhost:8080/NetMarket/api/catalogo/", {
+        catalogo: {
+          id: Math.floor(Math.random() * 10000),
+          ...form,
+        },
+        usuario,
+      });
       actualizarUsuario();
     } catch (error) {
       console.log(error);
@@ -47,10 +44,7 @@ export default function ModalCatalogo({
 
   async function editarCatalogo() {
     try {
-      await axios.put(
-        "https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/catalogo/",
-        form
-      );
+      await axios.put("http://localhost:8080/NetMarket/api/catalogo/", form);
 
       await actualizarUsuario();
     } catch (error) {
@@ -72,17 +66,17 @@ export default function ModalCatalogo({
               label="Nombre"
               name="nombre"
               type="text"
-              placeholder="Zapatos Air Max"
+              placeholder="Catálogo de productos"
               form={form}
               setForm={setForm}
-              value={form.nombre}
+              defaultValue={form.nombre}
             />
             <Input
               label="Descripción"
               name="descripcion"
               type="textarea"
-              value={form.descripcion}
-              placeholder="Estas zapatillas para hombre tienen una parte superior de cuero sintético y malla, una unidad Max Air en el talón para mayor amortiguación y una suela de goma duradera."
+              defaultValue={form.descripcion}
+              placeholder="Escribe una breve descripción del catálogo..."
               form={form}
               setForm={setForm}
             />
@@ -90,8 +84,8 @@ export default function ModalCatalogo({
               label="Logo"
               name="logo"
               type="text"
-              placeholder="https://placehold.co/600x400"
-              value={form.logo}
+              placeholder="https://ejemplo.com/logo.jpg"
+              defaultValue={form.logo}
               form={form}
               setForm={setForm}
             />
@@ -105,8 +99,8 @@ export default function ModalCatalogo({
               label="Banner"
               name="banner"
               type="text"
-              placeholder="https://placehold.co/1600x400"
-              value={form.banner}
+              placeholder="https://ejemplo.com/banner.jpg"
+              defaultValue={form.banner}
               form={form}
               setForm={setForm}
             />
@@ -123,52 +117,52 @@ export default function ModalCatalogo({
               placeholder="+1 234 5678910"
               form={form}
               setForm={setForm}
-              value={form.telefono}
+              defaultValue={form.telefono}
             />
             <Input
               label="Dirección"
               name="direccion"
               type="text"
-              placeholder="direccion"
+              placeholder="Calle Principal 123, Ciudad, País"
               form={form}
               setForm={setForm}
-              value={form.direccion}
+              defaultValue={form.direccion}
             />
             <Input
               label="Twitter"
               name="twitter"
               type="text"
-              placeholder="@username"
+              placeholder="https://twitter.com/ejemplo"
               form={form}
               setForm={setForm}
-              value={form.twitter}
+              defaultValue={form.twitter}
             />
             <Input
               label="Facebook"
               name="facebook"
               type="text"
-              placeholder="facebook"
+              placeholder="https://facebook.com/ejemplo"
               form={form}
               setForm={setForm}
-              value={form.facebook}
+              defaultValue={form.facebook}
             />
             <Input
               label="Whatsapp"
               name="whatsapp"
               type="text"
-              placeholder="whatsapp"
+              placeholder="https://wa.me/1234567890"
               form={form}
               setForm={setForm}
-              value={form.whatsapp}
+              defaultValue={form.whatsapp}
             />
             <Input
               label="Instagram"
               name="instagram"
               type="text"
-              placeholder="instagram"
+              placeholder="https://instagram.com/ejemplo"
               form={form}
               setForm={setForm}
-              value={form.instagram}
+              defaultValue={form.instagram}
             />
           </div>
           <div className="modal-footer">

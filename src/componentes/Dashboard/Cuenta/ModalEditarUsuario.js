@@ -29,10 +29,7 @@ export default function ModalEditarUsuario({ usuario, actualizarUsuario }) {
       if (contrasenaValida) {
         await updateEmail(auth.currentUser, form.correo);
 
-        await axios.put(
-          "https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/usuario/",
-          form
-        );
+        await axios.put("http://localhost:8080/NetMarket/api/usuario/", form);
 
         await actualizarUsuario();
       }
@@ -59,17 +56,17 @@ export default function ModalEditarUsuario({ usuario, actualizarUsuario }) {
                 label="Nombre"
                 name="nombre"
                 type="text"
-                placeholder="Zapatos Air Max"
+                placeholder="Usuario"
                 form={form}
                 setForm={setForm}
-                value={form.nombre}
+                defaultValue={form.nombre}
               />
               <Input
                 label="Correo"
                 name="correo"
                 type="email"
-                value={form.correo}
-                placeholder="usuario@test.com"
+                defaultValue={form.correo}
+                placeholder="usuario@correo.com"
                 form={form}
                 setForm={setForm}
               />

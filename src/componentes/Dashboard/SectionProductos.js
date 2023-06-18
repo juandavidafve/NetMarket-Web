@@ -1,23 +1,57 @@
 import { useState } from "react";
+
+import axios from "axios";
+
 import CardProducto from "./Productos/CardProducto";
 import ModalProducto from "./Productos/ModalProducto";
 
 export default function SectionProductos({ catalogo, actualizarUsuario }) {
   const [producto, setProducto] = useState({});
 
+  async function eliminarCategoriaVacia(categoria) {
+    const productos = (
+      await axios(
+        `http://localhost:8080/NetMarket/api/producto/categoria/${categoria.id}`
+      )
+    ).data;
+
+    if (productos.length === 0) {
+      await axios.delete(
+        `http://localhost:8080/NetMarket/api/categoria/${categoria.id}`
+      );
+    }
+  }
+
+  async function getCategorias(producto) {
+    try {
+      const listaCategorias = (
+        await axios.get(
+          `http://localhost:8080/NetMarket/api/categoria/producto/${producto.id}`
+        )
+      ).data;
+
+      return listaCategorias;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return catalogo ? (
     <div className="container p-5">
       <ModalProducto
-        catalogo={catalogo}
-        actualizarUsuario={actualizarUsuario}
         id="modalAgregarProducto"
         type="agregar"
+        catalogo={catalogo}
+        actualizarUsuario={actualizarUsuario}
       />
       <ModalProducto
         producto={producto}
-        actualizarUsuario={actualizarUsuario}
         id="modalEditarProducto"
         type="editar"
+        catalogo={catalogo}
+        actualizarUsuario={actualizarUsuario}
+        getCategorias={getCategorias}
+        eliminarCategoriaVacia={eliminarCategoriaVacia}
       />
 
       <div className="d-flex align-items-center justify-content-between ">
@@ -39,6 +73,9 @@ export default function SectionProductos({ catalogo, actualizarUsuario }) {
                 setProducto={setProducto}
                 producto={p}
                 actualizarUsuario={actualizarUsuario}
+                getCategorias={getCategorias}
+                eliminarCategoriaVacia={eliminarCategoriaVacia}
+                key={i}
               />
             );
           })
@@ -64,7 +101,7 @@ export default function SectionProductos({ catalogo, actualizarUsuario }) {
   //     const fetchData = async () => {
   //         try {
   //             const response = await axios({
-  //                 url: "https://52fa-190-90-86-70.ngrok-free.app/Turismo/api/apiturista/turista",
+  //                 url: "http://localhost:8080/Turismo/api/apiturista/turista",
   //             });
   //             setList(response.data);
   //         } catch (error) {
@@ -79,7 +116,7 @@ export default function SectionProductos({ catalogo, actualizarUsuario }) {
   //         if (isDelete) {
   //             try {
   //                 await axios.delete(
-  //                     `https://52fa-190-90-86-70.ngrok-free.app/Turismo/api/apiturista/turista/${id}`
+  //                     `http://localhost:8080/Turismo/api/apiturista/turista/${id}`
   //                 );
   //                 console.log("si");
   //             } catch (error) {

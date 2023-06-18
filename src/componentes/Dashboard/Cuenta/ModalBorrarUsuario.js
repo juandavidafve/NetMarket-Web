@@ -7,7 +7,7 @@ export default function ModalBorrarUsuario({ usuario }) {
   async function borrarUsuario() {
     await deleteUser(auth.currentUser);
     await axios.delete(
-      `https://52fa-190-90-86-70.ngrok-free.app/NetMarket/api/usuario/${usuario.id}`
+      `http://localhost:8080/NetMarket/api/usuario/${usuario.id}`
     );
   }
 
