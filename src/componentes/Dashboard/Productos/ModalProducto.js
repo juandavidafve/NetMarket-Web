@@ -30,19 +30,21 @@ export default function ModalProducto({
   function parseCategorias() {
     let listaCategorias = [];
 
-    form.categorias.forEach((c) => {
-      const lista = catalogo.categorias.filter((e) => {
-        return e.nombre == c;
-      });
-
-      if (lista.length > 0) {
-        listaCategorias.push(lista[0]);
-      } else {
-        listaCategorias.push({
-          nombre: c,
+    if (form.categorias) {
+      form.categorias.forEach((c) => {
+        const lista = catalogo.categorias.filter((e) => {
+          return e.nombre == c;
         });
-      }
-    });
+
+        if (lista.length > 0) {
+          listaCategorias.push(lista[0]);
+        } else {
+          listaCategorias.push({
+            nombre: c,
+          });
+        }
+      });
+    }
 
     return listaCategorias;
   }
